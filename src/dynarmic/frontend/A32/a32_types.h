@@ -13,11 +13,29 @@
 #include <mcl/stdint.hpp>
 
 #include "dynarmic/interface/A32/coprocessor_util.h"
-#include "dynarmic/ir/cond.h"
 
 namespace Dynarmic::A32 {
 
-using Cond = IR::Cond;
+enum class Cond {
+    EQ,
+    NE,
+    CS,
+    CC,
+    MI,
+    PL,
+    VS,
+    VC,
+    HI,
+    LS,
+    GE,
+    LT,
+    GT,
+    LE,
+    AL,
+    NV,
+    HS = CS,
+    LO = CC,
+};
 
 enum class Reg {
     R0,

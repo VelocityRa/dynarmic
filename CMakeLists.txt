@@ -13,18 +13,13 @@ if (MASTER_PROJECT)
 endif()
 
 # Dynarmic project options
-option(DYNARMIC_ENABLE_CPU_FEATURE_DETECTION "Turning this off causes dynarmic to assume the host CPU doesn't support anything later than SSE3" ON)
 option(DYNARMIC_ENABLE_NO_EXECUTE_SUPPORT "Enables support for systems that require W^X" OFF)
 option(DYNARMIC_FATAL_ERRORS "Errors are fatal" OFF)
 option(DYNARMIC_IGNORE_ASSERTS "Ignore asserts" OFF)
-option(DYNARMIC_TESTS "Build tests" ${BUILD_TESTING})
-option(DYNARMIC_TESTS_USE_UNICORN "Enable fuzzing tests against unicorn" OFF)
-option(DYNARMIC_USE_LLVM "Support disassembly of jitted x86_64 code using LLVM" OFF)
-option(DYNARMIC_USE_PRECOMPILED_HEADERS "Use precompiled headers" ON)
 option(DYNARMIC_USE_BUNDLED_EXTERNALS "Use all bundled externals (useful when e.g. cross-compiling)" OFF)
 option(DYNARMIC_WARNINGS_AS_ERRORS "Warnings as errors" ${MASTER_PROJECT})
 if (NOT DEFINED DYNARMIC_FRONTENDS)
-    set(DYNARMIC_FRONTENDS "A32;A64" CACHE STRING "Selects which frontends to enable")
+    set(DYNARMIC_FRONTENDS "A32" CACHE STRING "Selects which frontends to enable")
 endif()
 
 # Default to a Release build
@@ -120,67 +115,26 @@ else()
     endif()
 endif()
 
-# Arch detection
-include(DetectArchitecture)
-if (NOT DEFINED ARCHITECTURE)
-    message(FATAL_ERROR "Unsupported architecture encountered. Ending CMake generation.")
-endif()
-message(STATUS "Target architecture: ${ARCHITECTURE}")
-
 # Forced use of individual bundled libraries for non-REQUIRED library is possible with e.g. cmake -DCMAKE_DISABLE_FIND_PACKAGE_fmt=ON ...
 
 if (DYNARMIC_USE_BUNDLED_EXTERNALS)
-    set(CMAKE_DISABLE_FIND_PACKAGE_biscuit ON)
-    set(CMAKE_DISABLE_FIND_PACKAGE_Catch2 ON)
     set(CMAKE_DISABLE_FIND_PACKAGE_fmt ON)
     set(CMAKE_DISABLE_FIND_PACKAGE_mcl ON)
-    set(CMAKE_DISABLE_FIND_PACKAGE_oaknut ON)
     set(CMAKE_DISABLE_FIND_PACKAGE_tsl-robin-map ON)
-    set(CMAKE_DISABLE_FIND_PACKAGE_xbyak ON)
-    set(CMAKE_DISABLE_FIND_PACKAGE_Zydis ON)
 endif()
 
 # Ensure that robin-map `export`s
 set(TSL_ROBIN_MAP_ENABLE_INSTALL ON)
 
-find_package(Boost 1.57 REQUIRED)
 find_package(fmt 9 CONFIG)
 find_package(mcl 0.1.12 EXACT CONFIG)
 find_package(tsl-robin-map CONFIG)
-
-if ("arm64" IN_LIST ARCHITECTURE OR DYNARMIC_TESTS)
-    find_package(oaknut 2.0.1 CONFIG)
-endif()
-
-if ("riscv" IN_LIST ARCHITECTURE)
-    find_package(biscuit 0.9.1 QUIET)
-endif()
-
-if ("x86_64" IN_LIST ARCHITECTURE)
-    find_package(xbyak 7 CONFIG)
-    find_package(Zydis 4 CONFIG)
-endif()
-
-if (DYNARMIC_USE_LLVM)
-    find_package(LLVM REQUIRED)
-    separate_arguments(LLVM_DEFINITIONS)
-endif()
-
-if (DYNARMIC_TESTS)
-    find_package(Catch2 3 CONFIG)
-    if (DYNARMIC_TESTS_USE_UNICORN)
-        find_package(Unicorn REQUIRED)
-    endif()
-endif()
 
 # Pull in externals CMakeLists for libs where available
 add_subdirectory(externals)
 
 # Dynarmic project files
 add_subdirectory(src/dynarmic)
-if (DYNARMIC_TESTS)
-    add_subdirectory(tests)
-endif()
 
 #
 # Install
