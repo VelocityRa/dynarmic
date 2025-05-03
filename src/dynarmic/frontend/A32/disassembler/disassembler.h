@@ -13,5 +13,6 @@ namespace Dynarmic::A32 {
 
 std::string DisassembleArm(u32 instruction);
 std::string DisassembleThumb16(u16 instruction);
+std::string DisassembleThumb32(u32 instruction);
 
 }  // namespace Dynarmic::A32

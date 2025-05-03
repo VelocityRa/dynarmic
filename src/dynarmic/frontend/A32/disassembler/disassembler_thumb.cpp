@@ -13,15 +13,21 @@
 #include "dynarmic/common/string_util.h"
 #include "dynarmic/frontend/A32/a32_types.h"
 #include "dynarmic/frontend/A32/decoder/thumb16.h"
+#include "dynarmic/frontend/A32/decoder/thumb32.h"
 #include "dynarmic/frontend/A32/disassembler/disassembler.h"
 #include "dynarmic/frontend/imm.h"
 
 namespace Dynarmic::A32 {
 
 class DisassemblerVisitor {
+protected:
+    DisassemblerVisitor() = default; // Prevents direct construction outside inheritance
 public:
     using instruction_return_type = std::string;
+};
 
+class DisassemblerThumb16Visitor : DisassemblerVisitor {
+public:
     std::string thumb16_LSL_imm(Imm<5> imm5, Reg m, Reg d) {
         return fmt::format("lsls {}, {}, #{}", d, m, imm5.ZeroExtend());
     }
@@ -388,10 +394,23 @@ public:
     }
 };
 
+class DisassemblerThumb32Visitor : DisassemblerVisitor {
+public:
+    // TODO:
+};
+
 std::string DisassembleThumb16(u16 instruction) {
-    DisassemblerVisitor visitor;
-    auto decoder = DecodeThumb16<DisassemblerVisitor>(instruction);
+    DisassemblerThumb16Visitor visitor;
+    auto decoder = DecodeThumb16<DisassemblerThumb16Visitor>(instruction);
     return !decoder ? fmt::format("UNKNOWN: {:x}", instruction) : decoder->get().call(visitor, instruction);
+}
+
+std::string DisassembleThumb32(u32 instruction) {
+    // TODO:
+    // DisassemblerThumb32Visitor visitor;
+    // auto decoder = DecodeThumb32<DisassemblerThumb32Visitor>(instruction);
+    // return !decoder ? fmt::format("UNKNOWN: {:x}", instruction) : decoder->get().call(visitor, instruction);
+    return fmt::format("UNKNOWN: {:x}", instruction);
 }
 
 }  // namespace Dynarmic::A32
