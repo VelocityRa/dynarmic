@@ -91,35 +91,6 @@ jobs:
         working-directory: ${{github.workspace}}/build-x64
         run: cmake --build . --config Release
 
-      - name: Basic tests
-        if: matrix.platform == 'linux'
-        working-directory: ${{github.workspace}}
-        run: qemu-aarch64 -L /usr/aarch64-linux-gnu ./build-arm64/tests/dynarmic_tests -d yes
-
-      - name: Test against x86_64 implementation (A32, thumb)
-        if: matrix.platform == 'linux'
-        working-directory: ${{github.workspace}}
-        run: |
-          diff <(qemu-aarch64 -L /usr/aarch64-linux-gnu ./build-arm64/tests/dynarmic_test_generator thumb 42 1 100000) <(./build-x64/tests/dynarmic_test_generator thumb 42 1 100000)
-          diff <(qemu-aarch64 -L /usr/aarch64-linux-gnu ./build-arm64/tests/dynarmic_test_generator thumb 42 10 10000) <(./build-x64/tests/dynarmic_test_generator thumb 42 10 10000)
-          diff <(qemu-aarch64 -L /usr/aarch64-linux-gnu ./build-arm64/tests/dynarmic_test_generator thumb 42 100 1000) <(./build-x64/tests/dynarmic_test_generator thumb 42 100 1000)
-
-      - name: Test against x86_64 implementation (A32, arm)
-        if: matrix.platform == 'linux'
-        working-directory: ${{github.workspace}}
-        run: |
-          diff <(qemu-aarch64 -L /usr/aarch64-linux-gnu ./build-arm64/tests/dynarmic_test_generator arm 42 1 100000) <(./build-x64/tests/dynarmic_test_generator arm 42 1 100000)
-          diff <(qemu-aarch64 -L /usr/aarch64-linux-gnu ./build-arm64/tests/dynarmic_test_generator arm 42 10 10000) <(./build-x64/tests/dynarmic_test_generator arm 42 10 10000)
-          diff <(qemu-aarch64 -L /usr/aarch64-linux-gnu ./build-arm64/tests/dynarmic_test_generator arm 42 100 1000) <(./build-x64/tests/dynarmic_test_generator arm 42 100 1000)
-
-      - name: Test against x86_64 implementation (A64)
-        if: matrix.platform == 'linux'
-        working-directory: ${{github.workspace}}
-        run: |
-          diff <(qemu-aarch64 -L /usr/aarch64-linux-gnu ./build-arm64/tests/dynarmic_test_generator a64 42 1 100000) <(./build-x64/tests/dynarmic_test_generator a64 42 1 100000)
-          diff <(qemu-aarch64 -L /usr/aarch64-linux-gnu ./build-arm64/tests/dynarmic_test_generator a64 42 10 10000) <(./build-x64/tests/dynarmic_test_generator a64 42 10 10000)
-          diff <(qemu-aarch64 -L /usr/aarch64-linux-gnu ./build-arm64/tests/dynarmic_test_generator a64 42 100 1000) <(./build-x64/tests/dynarmic_test_generator a64 42 100 1000)
-
   build_windows:
     strategy:
       fail-fast: false

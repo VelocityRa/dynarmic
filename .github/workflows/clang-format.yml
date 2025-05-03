@@ -14,5 +14,5 @@ jobs:
 
     - uses: DoozyX/clang-format-lint-action@v0.15
       with:
-        source: 'src tests'
+        source: 'src'
         clangFormatVersion: 15

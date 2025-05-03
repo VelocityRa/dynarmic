@@ -56,8 +56,3 @@ jobs:
       - name: Build RISCV64
         working-directory: ${{github.workspace}}/build-riscv64
         run: cmake --build . --config Release
-
-      # - name: Basic tests
-      #   if: matrix.platform == 'linux'
-      #   working-directory: ${{github.workspace}}
-      #   run: qemu-riscv64 -L /usr/riscv64-linux-gnu ./build-riscv64/tests/dynarmic_tests -d yes
