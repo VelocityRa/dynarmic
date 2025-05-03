@@ -4,7 +4,7 @@ include(CMakeFindDependencyMacro)
 
 if (NOT @BUILD_SHARED_LIBS@)
     find_dependency(fmt 9)
-    find_dependency(mcl 0.1.12 EXACT)
+    find_dependency(mcl 0.1.13 EXACT)
     find_dependency(tsl-robin-map)
 endif()
 

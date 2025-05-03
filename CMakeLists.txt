@@ -127,7 +127,7 @@ endif()
 set(TSL_ROBIN_MAP_ENABLE_INSTALL ON)
 
 find_package(fmt 9 CONFIG)
-find_package(mcl 0.1.12 EXACT CONFIG)
+find_package(mcl 0.1.13 EXACT CONFIG)
 find_package(tsl-robin-map CONFIG)
 
 # Pull in externals CMakeLists for libs where available
